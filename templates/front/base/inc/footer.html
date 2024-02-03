@@ -1,0 +1,63 @@
+{%load static%}
+{% load i18n %}
+<footer id="footer" class="footer">
+    <div class="footer-top">
+        <div class="container">
+            <div class="inner">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="footer-item footer-about">
+                            <div class="logo">
+                                <a href="{%url 'front:home'%}">
+                                    <svg width="200px" height="100px" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                                        <text x="10" y="50" font-family="Arial" font-weight="bold" font-size="40" fill="#7527eb">proxyv</text>
+                                    </svg>
+                                    
+                                    
+                                </a>
+                            </div>
+                            <p> {%trans 'Anonim proxy servisi sağlayıcısı'%} </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="footer-item footer-menu">
+                            <h6> {%trans 'Keşfedin'%} </h6>
+                            <ul>
+                                <li><a href="blog-simple-grid.html" title="Blog">{%trans 'Blog'%}</a></li>
+                                <li><a href="blog-simple-grid.html" title="Blog">{%trans 'Proxy Denetleme'%}</a></li>
+                                <li><a href="about-company.html" title="About us">{%trans 'Hakkımızda'%}</a></li>
+                                <li><a href="blog-simple-grid.html" title="Blog">{%trans 'İletişim'%}</a></li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="footer-item footer-menu">
+                            <h6>{%trans 'Hizmetlerimiz'%}</h6>
+                            <ul>
+                                <li><a href="about-company.html" title="About us">Ipv6 Proxy</a></li>
+                                <li><a href="blog-simple-grid.html" title="Blog">Rotating Proxy</a></li>
+                                <li><a href="careers.html" title="Careers">API Token Proxy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="inner flex flex-content-sb flex-align-c">
+                <div class="copyright">© 2024 PROXYV. All rights reserved</div>
+                <div class="menu">
+                    <ul>
+                        <li><a href="privacy-policy.html" title="Terms">{%trans 'Hizmet Şartları'%}</a></li>
+                        <li><a href="privacy-policy.html" title="Privacy Policy">{%trans 'Güvenlik Politikası'%}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

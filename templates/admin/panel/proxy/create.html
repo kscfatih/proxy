@@ -1,0 +1,375 @@
+{%extends 'admin/base/index.html'%}
+{% load i18n %}
+
+{%block css%}
+<style>
+    .btn-auth {
+  width: 144px;
+  height: 45px;
+}
+@media (max-width: 767px) {
+    .col-mobile-5 {
+      flex: 0 0 100%;
+      max-width: 70%;
+    }
+  }
+  .btn-primary-site {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.invalid-feedback {
+    display: none;
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+}
+</style>
+{%endblock css%}
+
+{%block content%}
+<input type="hidden" value="{{user.bakiye_miktari}}" id="bakiye_miktari">
+<div class="row">
+    <div class="col-sm-12 col-lg-12">
+        <div class="iq-card"    >
+            <div class="iq-card-header d-flex justify-content-between">
+                <div class="iq-header-title">
+                   <a href="/panel/my-proxies"><button class="btn btn-primary"><i class="fa fa-angle-left"></i>{%trans 'Proxies'%}</button></a>
+                </div>
+                
+             </div>
+            <div class="iq-card-body">
+             
+                <ul class="nav nav-pills mb-3 nav-fill flex-column flex-sm-row" id="pills-tab-1" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="pills-home-tab-fill" data-toggle="pill" href="#pills-home-fill" role="tab" aria-controls="pills-home" aria-selected="true">Ipv6</a>
+                    </li>
+                  <!-- <li class="nav-item">
+                      <a class="nav-link" id="pills-profile-tab-fill" data-toggle="pill" href="#pills-profile-fill" role="tab" aria-controls="pills-profile" aria-selected="false">Ipv4</a>
+                  -->   </li>
+                  </ul>
+               <div class="tab-content" id="pills-tabContent-1">
+                  <div class="tab-pane fade show active" id="pills-home-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
+                   <div class="row">
+                    <div class="col-9 form-class">
+                        {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                                <div class="alert text-white bg-danger" role="alert">
+                                    <div class="iq-alert-text">{{ message }}</div>
+                                </div>
+                            {% elif message.tags == 'success' %}
+                                <div class="alert text-white bg-success" role="alert">
+                                    <div class="iq-alert-text">{{ message }}</div>
+                                </div>
+                            {% else %}
+                                <div class="alert text-white bg-info" role="alert">
+                                    <div class="iq-alert-text">{{ message }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <form method="POST">
+                        {%csrf_token%}
+                        <div class="form-row">
+                        <div class="form-group col-sm-4">
+                           <label for="server_id">{%trans 'Country'%}:</label>
+                           <select name="server_id" class="form-control server-id"  id="exampleFormControlSelect1">
+                            <option  selected value="disabled">{%trans 'Select'%}</option>
+                            {% for server in servers %}
+                            <option value="{{ server.id }}" >{{ server.location }}</option>
+                            {% endfor %}
+                            </select>
+                            <div class="invalid-feedback" id="serverError" style="display: none;">
+                                {% trans "Please select a location first." %}
+                            </div>
+                        </div> 
+                        <div class="form-group col-sm-4">
+                           <label for="pwd">{%trans 'Type'%} {%trans '(recommended HTTPs)'%}:</label>
+                           <select name="proxy_type" class="form-control" id="exampleFormControlSelect1">
+                            <option selected="" disabled="">{%trans 'Select'%}</option>
+                            <option>SOCKS5</option>
+                            <option>HTTPs</option>
+                         </select>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="email">{%trans 'Time period'%}:</label>
+                            <select name = "time_period" onclick="calculatePrice()" class="form-control" id="duration">
+                             <option selected="" disabled="">{%trans 'Select'%}</option>
+                             <option value="7">7 {%trans 'day'%}</option>
+                             <option value="14">14 {%trans 'day'%}</option>
+                             <option value="30">1 {%trans 'month'%}</option>
+                          </select>
+                         </div> 
+                    </div>
+                       
+                        <div class="form-row">
+                            <div class="form-group col-sm-2">
+                               <label for="email">{%trans 'Quantity'%}:</label>
+                               <input type="number" name="quantity" min="1"  class="form-control" id="quantity" oninput="calculatePrice()" >
+                            </div> 
+                            <div class="form-group col-sm-4">
+                                <label for="email">{%trans 'Site to use'%}:</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="siteInput">
+                                    <button type="button" class="btn-primary-site btn btn-primary" onclick="addSite()">{%trans 'Check'%}</button>
+                                    <div class="invalid-feedback" id="siteError" style="display: none;">
+                                        {% trans "Please enter a site name." %}
+                                    </div>
+                                    <div class="invalid-feedback" id="formatError" style="display: none;">
+                                        {% trans "Please enter a valid site format, e.g., .com, .net." %}
+                                    </div>
+                                </div>
+                             </div> 
+                            
+                            <div class="form-group col-sm-6">
+                                <label>{%trans 'Authentication settings'%}:</label><br>
+                                <button type="button" class="btna btn-success Automatic btn-auth me-8 btn" >{%trans 'Automatic'%}</button>
+                                <button type="button" class="btna btn-primary User btn-auth me-4 btn"  id="userPassButton">{%trans 'User&Password'%}</button>
+                                <button type="button" class="btna btn-primary White btn-auth me-4 btn"  id="whiteListButton">{%trans 'White List'%}</button>
+                                
+                            </div>
+                        </div>
+                       
+                       
+                        <div class="auth-class"></div>
+                  <div class="card-mobile"></div>
+                </div>
+                <div class="col-3 col-mobile-5">
+                    
+                        <div class="card ">
+                           <div class="card-body" style="background-color:rgb(251, 246, 255);">
+                              <h4 class="card-title" >{%trans 'Total'%}</h4>
+                             <p style="font-weight: bold;">{%trans 'Quantity'%}: <span id="quantity-total" > </span></p>
+                             <p style="font-weight: bold;">{%trans 'Price'%}: <span name = "totalprice" id="price-total" >    </span> <span >$</span> </p>
+                             <input type="hidden" name="totalprice" id="hiddenTotalPrice" >
+                                <span style="font-weight: bold; display:none;" id="site-checker-head">{%trans 'Site Checker'%}:</span>
+                                <div class="use-site" id="siteList">
+                                </div>
+                             
+                             </div>
+                           
+                        </div>
+                        
+                        <button type="submit" id="buy-button" style="width: 70px; margin-top: 20px; margin-left: 250px;" class="btn btn-primary">{%trans 'Buy'%}</button>
+                    </div>
+                    
+                </form>
+                </div>
+                  </div>
+                  <div class="tab-pane fade" id="pills-profile-fill" role="tabpanel" aria-labelledby="pills-profile-tab-fill">
+                   
+                  </div>
+                 
+               </div>
+            </div>
+         </div>
+       
+       </div>
+       </div>
+
+
+{%endblock content%}
+
+{%block js%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+    // Buton ve uyarı mesajını ekleyin
+    $('#buy-button').before('<a id="add-balance" href="/panel/payment" class="btn btn-primary">Bakiye Ekle</a>');
+    $('#add-balance').before('<span id="balance-warning" style="margin-top: 20px; margin-left: 10px;">Your balance is insufficient! Add balance.</span>');
+
+    $('#add-balance').hide();
+    $('#balance-warning').hide();
+
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            checkBalance();
+        });
+    });
+
+    var config = { characterData: true, childList: true, subtree: true };
+    observer.observe(document.getElementById('price-total'), config);
+
+    function checkBalance() {
+        var priceTotal = parseFloat($('#price-total').text()) || 0;
+        var balance = parseFloat($('#bakiye_miktari').val()) || 0;
+
+        if(priceTotal > balance || balance === 0) {
+   
+            $('button[type="submit"]').prop('disabled', true);
+            $('#add-balance').show();
+            $('#balance-warning').show();
+        } else {
+          
+            $('button[type="submit"]').prop('disabled', false);
+            $('#add-balance').hide();
+            $('#balance-warning').hide();
+        }
+    }
+
+    checkBalance();
+});
+   window.onload = function() {
+        document.getElementById('exampleFormControlSelect1').addEventListener('change', function() {
+            if (this.value !== "disabled") {
+                document.getElementById('site-checker-head').style.display = 'none';
+                document.getElementById('siteList').innerHTML = '';
+            }
+        });
+    };
+$(document).ready(function(){
+    $(".btna").click(function() {
+        $(".btna").removeClass("btn-success").addClass("btn-primary");
+        $(this).addClass("btn-success").removeClass("btn-primary");
+    });
+});
+
+$(document).ready(function(){
+    $(".btna").click(function() {
+        $(".btna").removeClass("btn-success").addClass("btn-primary");
+        $(this).addClass("btn-success").removeClass("btn-primary");
+
+        $("#userPassForm").hide();
+        $("#ipForm").hide();
+        $("#userName").val("");
+        $("#userPass").val("");
+        $("#ipAdress").val("");
+
+        if ($(this).attr("id") == "userPassButton") {
+            $("#userPassForm").show();
+        } else if ($(this).attr("id") == "whiteListButton") {
+            $("#ipForm").show();
+        }
+    });
+    $(".User").click(function() {
+        const authClass = document.querySelector('.auth-class');
+        authClass.innerHTML = '';
+        const htmlCode = `
+        <div class="form-row" id="userPassForm" ">
+                            <div class="form-group col-sm-6">
+                               <label for="email">{%trans 'User name'%}:</label>
+                               <input name = "userName" type="text"class="form-control" id="userName">
+                            </div> 
+                            
+                            <div class="form-group col-sm-6">
+                                <label for="email">{%trans 'Password'%}:</label>
+                                <input name = "password" type="text"  class="form-control" id="userPass">
+                             </div> 
+                        </div>`;
+                        authClass.innerHTML = htmlCode;
+    });
+    $(".Automatic").click(function() {
+        const authClass = document.querySelector('.auth-class');
+        authClass.innerHTML = '';
+      
+    });
+    $(".White").click(function() {
+        const authClass = document.querySelector('.auth-class');
+        const htmlCode = `
+        <div class="form-row"  id="ipForm"  ">
+                            <div class="form-group col-sm-6">
+                               <label for="email">{%trans 'Ip adresses'%}:</label>
+                               <input type="text"class="form-control" name="whitelist" id="ipAdress">
+                            </div> 
+                        </div>`;
+                        authClass.innerHTML = htmlCode;
+     
+    });
+
+});
+
+function calculatePrice() {
+    
+    var quantity = document.getElementById('quantity').value;
+    var duration = document.getElementById('duration').value;
+    var price = 0;
+    if (quantity < 0 || quantity == 0) {
+            alert("Lütfen 0'dan büyük bir sayı girin");
+            document.getElementById('quantity').value = '';
+        }
+    if (quantity <= 30) {
+        price = quantity * 0.09;
+    } else if (quantity <= 50) {
+        price = 30 * 0.09 + (quantity - 30) * 0.07;
+    } else if (quantity <= 250) {
+        price = 30 * 0.09 + 20 * 0.07 + (quantity - 50) * 0.05;
+    } else if (quantity <= 550) {
+        price = 30 * 0.09 + 20 * 0.07 + 200 * 0.05 + (quantity - 250) * 0.04;
+    } else if (quantity <= 1050) {
+        price = 30 * 0.09 + 20 * 0.07 + 200 * 0.05 + 300 * 0.04 + (quantity - 550) * 0.03;
+    } else {
+        price = 30 * 0.09 + 20 * 0.07 + 200 * 0.05 + 300 * 0.04 + 500 * 0.03 + (quantity - 1050) * 0.02;
+    }
+
+    
+if (duration && !isNaN(duration)) {
+    price = (price / 30) * duration;
+    document.getElementById('price-total').innerHTML = price.toFixed(2);
+    document.getElementById('hiddenTotalPrice').value = price.toFixed(2);
+} else {
+    document.getElementById('price-total').innerHTML = '';
+    document.getElementById('hiddenTotalPrice').value = '';
+}
+document.getElementById('quantity-total').innerHTML = quantity;
+    
+}
+function addSite() {
+    var serverSelect = document.getElementById('exampleFormControlSelect1');
+    var siteInput = document.getElementById('siteInput');
+    var siteList = document.getElementById('siteList');
+    var serverError = document.getElementById('serverError');
+    var siteError = document.getElementById('siteError');
+    var formatError = document.getElementById('formatError');
+    var siteCheckHead = document.getElementById('site-checker-head');
+
+    var selectedValue = serverSelect.value;
+    var inputValue = siteInput.value;
+
+    // Reset error displays
+    serverError.style.display = 'none';
+    siteError.style.display = 'none';
+    formatError.style.display = 'none';
+
+    if (!selectedValue || selectedValue === 'disabled') {
+        serverError.style.display = 'block';
+        return;
+    }
+
+    if (!inputValue) {
+        siteError.style.display = 'block';
+        return;
+    }
+
+    if (!inputValue.includes('.')) {
+        formatError.style.display = 'block';
+        return;
+    }
+
+    // Fetch the data from server
+    fetch('/panel/check_site/' + selectedValue + '/' + inputValue)
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'success') {
+            siteCheckHead.style.display = 'block';
+            var siteItem = document.createElement('div');
+            siteItem.className = 'site-item';
+            siteItem.innerHTML = inputValue + '&#32;<i class="fa-solid fa-circle-check" style="color:green;"></i><br>';
+            siteList.appendChild(siteItem);
+        } else if (data.message === 'fail') {
+            siteCheckHead.style.display = 'block';
+            var siteItem = document.createElement('div');
+            siteItem.className = 'site-item';
+            siteItem.innerHTML = inputValue + '&#32;<i class="fa-regular fa-circle-xmark" style="color:red;"></i><br>';
+            siteList.appendChild(siteItem);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+
+    // Clear the input field
+    siteInput.value = '';
+}
+
+</script>
+{%endblock js%}

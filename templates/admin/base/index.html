@@ -1,0 +1,31 @@
+{%load static%}
+{% load i18n %}
+<!doctype html>
+<html lang="en">
+<head>
+      
+   {%include 'admin/base/inc/head.html'%}
+   {%block css%} {%endblock css%}
+   {%block js%} {%endblock js%}
+   </head>
+   <body class="sidebar-main">
+      <div id="loading">
+         <div id="loading-center">
+         </div>
+      </div>
+      <div class="wrapper">
+      {%include 'admin/base/inc/sidebar.html'%}
+      {%include 'admin/base/inc/navbar.html'%}
+      
+      <div id="content-page" class="content-page">
+        {%block content%} {%endblock content%}
+       
+      </div>
+      </div>
+
+      {%include 'admin/base/inc/footer.html'%}
+      {%include 'admin/base/inc/floatMenu.html'%}
+      {%include 'admin/base/inc/script.html'%}
+      
+   </body>
+</html>

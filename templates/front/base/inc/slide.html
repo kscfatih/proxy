@@ -1,0 +1,27 @@
+{%load static%}
+{% load i18n %}
+<section class="section background-grey has-shape opt120 spdb overflow-hidden">
+    <div class="shape shape-navy-2"></div>
+    <div class="shape shape-navy"></div>
+    <div class="container">
+        <div class="row flex-align-c">
+            <div class="col-lg-6">
+                <div class="heading mb32">
+                    <div class="heading-sub size-xl no-uppercase">{%trans 'Yüksek Anonimlik'%}</div>
+                    <h2 class="heading-title size-xxxxl color-navy-2">IPV6 Proxy</h2>
+                    <div class="heading-desc"> Geniş IP aralıkları ve <br>  düşük engelleme riski ile işlerinizi kesintisiz yürütün.</div>
+                </div>
+                <div class="button-wrap">
+                    <a href="{%url 'panel:create'%}" class="button fullfield xs-mb10" title="Get Started">Hızlı Kurulum</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="images lg-mt32 layout-10">
+                    <div class="inner">
+                        <img class="img01 animate__jump" src="{%static 'front/assets/images/hw3-01.png'%}" alt="Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

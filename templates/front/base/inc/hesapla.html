@@ -1,0 +1,92 @@
+{% load i18n %}
+<section class="section spdt">
+    <div class="container">
+      
+        <div class="block-image-box layout-02 row">
+            <div class="image-box col-2">
+               
+            </div>
+            <div class="image-box col-8">
+                <div class="thumbnail">
+                    <h4 class="title mb-3">{%trans 'Ipv6 fiyat hesapla'%}</h4>
+                </div>
+                <div class="content">
+                    <form action="#" class="sign-in">
+                        <div class="field-input">
+                            <label for="quantity">{%trans 'Adet'%}</label>
+                            <input oninput="calculatePrice()" type="number" id="quantity" class="form-control" >
+                        </div>
+                        <div class="field-input">
+                            <label for="time-period">{%trans 'Zaman periyodu'%}</label>
+                            <select onchange="calculatePrice()" name="time-period" class="form-control" id="time-period">
+                                <option value="bos">{%trans 'Seçiniz'%}</option>
+                                <option value="7">{%trans '1 hafta'%}</option>
+                                <option value="30">{%trans '1 Ay'%}</option>
+                            </select>
+                        </div>
+                        <div class="field-input ">
+                            <label for="location">{%trans 'Lokasyon'%}</label>
+                            <select name="location" id="location" class="form-control mb-3" >
+                                <option value="">{%trans 'Seçiniz'%}</option>
+                                <option value="turkey">{%trans 'turkey'%}</option>
+                         
+                            </select>
+                        </div>
+                        <div class="field-submit mb-5">
+                            
+                            <h4 >{%trans 'Toplam :' %}<span class="proxy-price" >0$</span></h4> 
+                        </div>
+                        <div class="button-wrap">
+                            <a href="{%url 'panel:create'%}" class="button text" title="Learn More">{%trans 'Satın Al'%}<i class="las la-long-arrow-alt-right color-navy"></i></a>
+                        </div>
+                    </form>
+                  
+                 
+                </div>
+            </div>
+            <div class="image-box col-2">
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function calculatePrice() {
+var quantity = document.getElementById('quantity').value;
+var duration = document.getElementById('time-period').value; // ID düzeltildi
+var price = 0;
+
+// Adet kontrolü
+if (quantity <= 0) {
+alert("Lütfen 0'dan büyük bir sayı girin");
+document.getElementById('quantity').value = '';
+return;
+}
+
+// Fiyat hesaplama
+if (quantity <= 30) {
+price = quantity * 0.09;
+} else if (quantity <= 50) {
+price = 30 * 0.09 + (quantity - 30) * 0.07;
+} else if (quantity <= 250) {
+price = 30 * 0.09 + 20 * 0.07 + (quantity - 50) * 0.05;
+} else if (quantity <= 550) {
+price = 30 * 0.09 + 20 * 0.07 + 200 * 0.05 + (quantity - 250) * 0.04;
+} else if (quantity <= 1050) {
+price = 30 * 0.09 + 20 * 0.07 + 200 * 0.05 + 300 * 0.04 + (quantity - 550) * 0.03;
+} else {
+price = 30 * 0.09 + 20 * 0.07 + 200 * 0.05 + 300 * 0.04 + 500 * 0.03 + (quantity - 1050) * 0.02;
+}
+
+// Zaman periyoduna göre fiyatı ayarla
+if (duration && !isNaN(duration)) {
+price = (price / 30) * duration;
+}
+
+// Sonucu ekrana yazdır
+document.querySelector('.proxy-price').innerHTML = price.toFixed(2) + '$';
+}
+
+
+</script>

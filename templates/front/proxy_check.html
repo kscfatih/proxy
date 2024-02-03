@@ -1,0 +1,26 @@
+<!-- myapp/templates/myapp/proxy_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proxy Kontrolü</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Kontrol Et</button>
+    </form>
+    {% if result %}
+        <h2>Sonuçlar</h2>
+        <ul>
+            
+        {% for proxy, is_active, response_time, country , proxy_type in result %}
+            <li>{{ proxy }}: 
+                {% if is_active %} Aktif (Yanıt Süresi: {{ response_time }} ms, Ülke: {{ country }} , Tip: {{proxy_type}}) 
+                {% else %} Pasif {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,225 @@
+{%extends 'admin/base/index.html'%}
+{% load i18n %}
+{% load tz %}
+{%block css%}
+<style>
+   .ticket-item{
+      cursor:pointer;
+   }
+</style>
+{%endblock css%}
+{%block content%}
+<div class="container-fluid">
+   {% if messages %}
+   {% for message in messages %}
+       {% if message.tags == 'error' %}
+           <div class="alert text-white bg-danger" role="alert">
+               <div class="iq-alert-text">{{ message }}</div>
+           </div>
+       {% elif message.tags == 'success' %}
+           <div class="alert text-white bg-success" role="alert">
+               <div class="iq-alert-text">{{ message }}</div>
+           </div>
+       {% else %}
+           <div class="alert text-white bg-info" role="alert">
+               <div class="iq-alert-text">{{ message }}</div>
+           </div>
+       {% endif %}
+   {% endfor %}
+{% endif %}
+    <div class="row">
+       <div class="col-sm-6 col-md-6 col-lg-6">
+        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+            <div class="iq-card-body">
+               <div class="d-flex align-items-center justify-content-between text-right">
+                  <div class="icon iq-icon-box rounded-circle dark-icon bg-primary">
+                     <i class="ri-home-heart-line"></i>
+                  </div>
+                  <div>
+                     <h5 class="mb-0">Active Proxy</h5>
+                     <span class="h4 text-primary mb-0 counter d-inline-block w-100">
+                     {%if proxies_context_total%}   {{proxies_context_total}} {%else%} 0{%endif%}
+                     </span>
+                  </div>
+               </div>
+            </div>
+         </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                <div class="iq-card-body iq-box-relative">
+                   <div class="d-flex align-items-center justify-content-between text-right">
+                      <div class="icon iq-icon-box rounded-circle bg-info">
+                         <i class="ri-building-line" aria-hidden="true"></i>
+                      </div>
+                      <div>
+                         <h5 class="mb-0">Balance  </h5>
+                         <span class="h4 text-info mb-0  d-inline-block w-100"> {{balance_context}} </span>
+                      </div>
+                   </div>
+                </div>
+             </div>
+       </div>
+       <div class="col-lg-6 col-md-6">
+          <div class="iq-card iq-card-stretch iq-card-height">
+             <div class="iq-card-header d-flex justify-content-between">
+                <div class="iq-header-title">
+                   <h4 class="card-title">{%trans 'Destek Talepleri'%}</h4>
+                </div>
+             </div>
+           
+             <div class="iq-card-body">
+               {%if ticket_context%}
+                <ul class="list-inline p-0 m-0" id="ticket_context">
+                {% for i in ticket_context%}
+                   <li class="d-flex mb-3 align-items-center ticket-item p-3 sell-list border-primary rounded" data-id="{{i.id}}">
+                      <div class="user-img img-fluid">
+                        <i class="ri-discuss-line" aria-hidden="true"></i>
+                      </div>
+                      <div class="media-support-info ml-3">
+                         <h6>{{i.title}}</h6>
+                         <p class="mb-0 font-size-12"> {{i.created_at}} </p>
+                      </div>
+                      <div class="iq-card-header-toolbar d-flex align-items-center">
+                         <div class="badge badge-pill badge-primary"> {{i.status}} </div>
+                      </div>
+                   </li>
+                {%endfor%}
+                   
+                </ul>
+                <div id="ticket-pagination">
+                    <button class="btn-primary btn btn-sm" id="ticket-prev">{%trans 'Geri'%}</button>
+                    <span id="ticket-current-page">1</span>
+                    <button class="btn-primary btn btn-sm" id="ticket-next">{%trans 'İleri'%}</button>
+                </div>
+             
+             {%else%}
+             <div class="row col-12">
+               <div class="col-6 h5">{%trans 'Bir sorun mu var ? Destek talebi oluşturun.'%}</div>
+               <div class="col-sm-6">
+                  <a href="/panel/ticket" class="btn btn-primary">{%trans 'Talep Oluştur'%}</a>
+                </div>
+             </div>
+            
+             
+             
+             {%endif%}
+            </div>
+          </div>
+       </div>
+       <div class="col-sm-6 col-md-6 col-lg-6">
+        <div class="iq-card iq-card-stretch iq-card-height">
+            <div class="iq-card-header d-flex justify-content-between">
+               <div class="iq-header-title">
+                  <h4 class="card-title">{%trans 'Hizmetlerim'%}</h4>
+               </div>
+            </div>
+            <div class="iq-card-body">
+               {%if proxies_context%}
+               <ul class="list-inline m-0 p-0" id="proxies_context">
+                {%for i in proxies_context%}
+                  <li class="mb-4">
+                     <div class="d-flex align-items-center justify-content-between">
+                        <div class="media align-items-center">
+                           <div class="iq-bg-primary dark-icon-light rounded icon-date" data-wow-delay="0.2s">
+                              <div class="date-meta">
+                                 <h5 class="date"> ipv6 </h5>
+                                 
+                                 <div class="icon-dot bg-primary dark-icon"></div>
+                              </div>
+                           </div>
+                           <div class="media-body ml-3">
+                              <h5 class="mb-0">{{i.quantity}} {%trans 'Adet'%}  {{i.server.location}} </h5>
+                              <small> {{i.date_created}} {%trans 'Tarihinde oluşturuldu'%}</small><br>
+                              <small> {{ i.end_date|utc|timezone:"Europe/Istanbul" }} {%trans 'Bitiş tarihi'%}</small>
+                           </div>
+                        </div>
+                        {% if i.end_date < now %}
+                        <div class="badge badge-pill badge-primary">Pasif</div>
+                    {% else %}
+                        <div class="badge badge-pill badge-primary">Aktif</div>
+                    {% endif %}
+                     </div>
+                  </li>
+                  {%endfor%}
+                  
+               </ul>
+               <div id="proxies-pagination">
+                <button class="btn-primary btn btn-sm" id="proxies-prev">{%trans 'Geri'%}</button>
+                <span  id="proxies-current-page">1</span>
+                <button class="btn-primary btn btn-sm" id="proxies-next">{%trans 'İleri'%}</button>
+            </div>
+            {%else%}
+            <div class="row col-12">
+               <div class="col-6 h5">{%trans 'Otomatik kurulum ile sipariş verin'%}</div>
+               <div class="col-sm-6">
+                  <a href="/panel/create" class="btn btn-primary">{%trans 'Satın Al'%}</a>
+                </div>
+             </div>
+            {%endif%}
+            </div>
+         </div>
+       </div>
+       
+    </div>
+ </div>
+{%endblock content%}
+
+{%block js%}
+<script>
+$(document).ready(function() {
+
+   $('.ticket-item').on('click', function() {
+        var itemId = $(this).data('id'); 
+        var newUrl = '/panel/ticket-detail/' + itemId; 
+        window.open(newUrl, '_blank'); 
+    });
+    var itemsPerPage = 5;
+
+    var proxiesTotalPages = Math.ceil($('#proxies_context li').length / itemsPerPage);
+    $('#proxies_context li').hide().slice(0, itemsPerPage).show();
+    
+    $('#proxies-next').on('click', function() {
+        var currentPage = parseInt($('#proxies-current-page').text());
+        if (currentPage < proxiesTotalPages) {
+            changePage('#proxies_context', currentPage, currentPage + 1);
+            $('#proxies-current-page').text(currentPage + 1);
+        }
+    });
+
+    $('#proxies-prev').on('click', function() {
+        var currentPage = parseInt($('#proxies-current-page').text());
+        if (currentPage > 1) {
+            changePage('#proxies_context', currentPage, currentPage - 1);
+            $('#proxies-current-page').text(currentPage - 1);
+        }
+    });
+
+    var ticketsTotalPages = Math.ceil($('#ticket_context li').length / itemsPerPage);
+    $('#ticket_context li').hide().slice(0, itemsPerPage).show();
+
+    $('#ticket-next').on('click', function() {
+        var currentPage = parseInt($('#ticket-current-page').text());
+        if (currentPage < ticketsTotalPages) {
+            changePage('#ticket_context', currentPage, currentPage + 1);
+            $('#ticket-current-page').text(currentPage + 1);
+        }
+    });
+
+    $('#ticket-prev').on('click', function() {
+        var currentPage = parseInt($('#ticket-current-page').text());
+        if (currentPage > 1) {
+            changePage('#ticket_context', currentPage, currentPage - 1);
+            $('#ticket-current-page').text(currentPage - 1);
+        }
+    });
+
+    function changePage(listId, fromPage, toPage) {
+        var start = (toPage - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+        $(listId + ' li').hide().slice(start, end).show();
+    }
+});
+
+</script>
+{%endblock js%}

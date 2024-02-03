@@ -1,0 +1,57 @@
+
+{%extends 'admin/login/base.html'%}
+{%load static%}
+
+{%block content%}
+<h1 class="mb-0">Sign Up</h1>
+<p>Enter your email address and password to access admin panel.</p>
+<form method="POST" class="mt-4">
+    {%csrf_token%}
+    
+    {% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert text-white bg-danger" role="alert">
+<div class="iq-alert-text">{{ message }}</div>
+</div>
+{% elif message.tags == 'success' %}
+<div class="alert text-white bg-success" role="alert">
+<div class="iq-alert-text">{{ message }}</div>
+</div>
+{% else %}
+<div class="alert text-white bg-info" role="alert">
+<div class="iq-alert-text">{{ message }}</div>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+    <div class="form-group">
+        <label for="exampleInputEmail1">Firstname</label>
+        <input type="text" name="firstname" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Full Name">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Lastname</label>
+        <input type="text" name="lastname" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Full Name">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail2">Email address</label>
+        <input type="email" name="email" class="form-control mb-0" id="exampleInputEmail2" placeholder="Enter email">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" name="pw1" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputPassword2">Password (again)</label>
+        <input type="password" name="pw2" class="form-control mb-0" id="exampleInputPassword2" placeholder="Password">
+    </div>
+    <div class="d-inline-block w-100">
+        <div class="custom-control custom-checkbox d-inline-block mt-2 pt-1">
+            <input type="checkbox" class="custom-control-input" id="customCheck1">
+            <label class="custom-control-label" for="customCheck1">I accept <a href="#">Terms and Conditions</a></label>
+        </div>
+        <button type="submit" class="btn btn-primary float-right">Sign Up</button>
+    </div>
+    
+</form>
+{%endblock content%}

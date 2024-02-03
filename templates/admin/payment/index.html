@@ -1,0 +1,703 @@
+{%extends 'admin/base/index.html'%}
+{%load static%}
+{% load i18n %}
+{% load custom_filters %}
+{%block css%}
+<style>
+    table td {
+    padding-right: 20px;
+}
+.error-message {
+    color: red; /* Kırmızı metin rengi */
+    /* İsteğe bağlı diğer stiller ekleyebilirsiniz, örneğin: */
+    font-weight: bold;
+}
+</style>
+
+{%endblock css%}
+
+{%block content%}
+{%if mesaj%}
+{%if status == 'basarili'%}
+<div class="alert alert-success" role="alert">
+    <div class="iq-alert-text">{{mesaj}}</div>
+ </div>
+{%else%}
+ <div class="alert alert-danger" role="alert">
+    <div class="iq-alert-text">{{mesaj}}</div>
+ </div>
+{%endif%}
+ {%endif%}
+
+
+<div class="iq-card">
+
+    <div class="iq-card-header d-flex justify-content-between">
+       <div class="iq-header-title">
+          <h4 class="card-title">{%trans 'Billing'%}</h4>
+       </div>
+    </div>
+    <div class="iq-card-body">
+       <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab-1" role="tablist">
+          <li class="nav-item">
+             <a class="nav-link active" id="pills-home-tab-fill" data-toggle="pill" href="#pills-home-fill" role="tab" aria-controls="pills-home" aria-selected="true">{%trans 'Make Payment'%}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="pills-profile-tab-fill" data-toggle="pill" href="#pills-profile-fill" role="tab" aria-controls="pills-profile" aria-selected="false">{%trans 'Invoices'%}</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" id="pills-contact-tab-fill" data-toggle="pill" href="#pills-contact-fill" role="tab" aria-controls="pills-contact" aria-selected="false">{%trans 'Payment History'%}</a>
+         </li>
+       </ul>
+       <div class="tab-content" id="pills-tabContent-1">
+          <div class="tab-pane fade show active" id="pills-home-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
+            <div class="iq-card">
+                
+                <div class="iq-card-body">
+                   <div class="row">
+                      
+                      <div class="col-sm-9">
+                        
+                            <div class="tab-pane fade show active" id="card-tab" role="tabpanel" aria-labelledby="card-tab-v">
+                               <!-- -->
+                               
+                                <div class="row">
+                                   <div class="col-lg-8">
+                                      <div class="iq-card">
+                                         <div class="iq-card-header d-flex justify-content-between">
+                                            <div class="iq-header-title">
+                                               <h4 class="card-title">{%trans 'Payment Card Options'%}</h4>
+                                            </div>
+                                         </div>
+                                         <div class="iq-card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                            <table>
+                                                {% if cards %}
+                                                {% for i in cards %}
+                                                <tr>
+                                                <td>
+                                                <input type="checkbox" class="card_check">
+                                                <input type="hidden" name="proxy_n" value="{{i.proxy_n}}" >
+                                                <input type="hidden" name="proxy_name" value="{{i.proxy_name}}" >
+                                                <input type="hidden" name="proxy_m" value="{{i.proxy_m}}" >
+                                                <input type="hidden" name="proxy_y" value="{{i.proxy_y}}" >
+                                                <input type="hidden" name="proxy_c" value="{{i.proxy_c}}" >
+                                                </td>
+                                                <td>  <span>{{ i.proxy_n|mask_card }}</span></td>
+                                                <td>  <span>{{i.proxy_name}}</span></td>
+                                                <td>  <span>{{i.proxy_m}}/{{i.proxy_y}}</span></td>
+                                                <td >
+                                                    <i style="color: red; cursor:pointer;" data-id="{{i.id}}" id="proxy_n_delete" class="delete-icon fa-solid fa-box-archive"></i></td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </table>
+                                            </div>
+
+                                            <hr>
+                                            
+                                            
+                                            <div class="add-card">
+                                                <a href="#" id="add-card-link"><span><i class="ri-add-box-line mr-2 font-size-18"></i>{%trans 'Add Card'%}</span></a>                       </div>
+                                         </div>
+                                         <div id="popup-container" class="container" style="display: none;">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <form id="payment-form" method="POST" action="https://www.paytr.com/odeme">
+                                                        {%csrf_token%}
+                                                        <div class="row">
+                                                            <div class="col-md-12 form-group">
+                                                                <label>İsim-Soyisim</label>
+                                                                <input type="text" name="cc_owner" class="form-control" id="name" placeholder="Ad-Soyad">
+                                                                <small class="form-text text-muted">Kart sahibinin adı ve soyadı</small>
+                                                            </div>
+                                                            <div class="col-md-12 form-group">
+                                                                <label>Kart Numarası</label>
+                                                                <input type="text" class="form-control" name="card_number" id="card-number-text" placeholder="Kredi kartı numarası">
+                                                               
+                                                                <small class="form-text text-muted">Kredi kartının 16 haneli numarasını giriniz</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4 form-group">
+                                                                <label>Ay</label>
+                                                                <input type="text" class="form-control" name="expiry_month" id="sktarih-ay" placeholder="SKT - Ay">
+                                                                <small class="form-text text-muted">Kredi kartının son kullanma tarihi - ay</small>
+                                                            </div>
+                                                            <div class="col-md-4 form-group">
+                                                                <label>Yıl</label>
+                                                                <input type="text" class="form-control" name="expiry_year" id="sktarih-yil" placeholder="SKT - Yil">
+                                                                <small class="form-text text-muted">Kredi kartının son kullanma tarihi - yıl</small>
+                                                            </div>
+                                                            <div class="col-md-4 form-group">
+                                                                <label>CVV</label>
+                                                                <input type="text" class="form-control" name="cvv" id="cvv" placeholder="CVV">
+                                                                <small class="form-text text-muted">Kredi kartının arkasında bulunan 3 haneli güvenlik kodu</small>
+                                                            </div>
+                                                            <div class="col-md-12 form-group">
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <input type="checkbox" class="custom-control-input save-check" id="customCheck1">
+                                                                    <label class="custom-control-label" for="customCheck1">Kart bilgilerim kayıt edilsin</label>
+                                                                 </div>
+                                                            </div>
+                                                            <input type="hidden" id="user-id" value="{{request.user.id}}">
+                                                        </div><br>
+                                                       
+                                                    
+                                                </div>
+                                                
+                                                
+                                               </div>
+                                         
+                                        </div>
+                                       <div class="container">
+
+                                        <input type="hidden" name="merchant_id" value="{{ merchant_id }}">
+                                        <input type="hidden" name="user_ip" value="{{ user_ip }}">
+                                        <input type="hidden" name="merchant_oid" value="{{ merchant_oid }}">
+                                        <input type="hidden" name="email" value="{{ email }}">
+                                        <input type="hidden" name="payment_type" value="{{ payment_type }}">
+                                        <input type="hidden" name="currency" value="{{ currency }}">
+                                        <input type="hidden" name="test_mode" value="{{ test_mode }}">
+                                        <input type="hidden" name="non_3d" value="{{ non_3d }}">
+                                        <input type="hidden" name="merchant_ok_url" value="{{ merchant_ok_url }}">
+                                        <input type="hidden" name="merchant_fail_url" value="{{ merchant_fail_url }}">
+                                        <input type="hidden" name="user_name" value="{{ user_name }}">
+                                        <input type="hidden" name="user_address" value="{{ user_address }}">
+                                        <input type="hidden" name="user_phone" value="{{ user_phone }}">
+                                        <input type="hidden" name="user_basket" value="{{ user_basket }}">
+                                        <input type="hidden" name="debug_on" value="{{ debug_on }}">
+                                        <input type="hidden" name="client_lang" value="{{ client_lang }}">
+                                        <input type="hidden" name="paytr_token" value="{{ paytr_token }}">
+                                        <input type="hidden" name="non3d_test_failed" value="{{ non3d_test_failed }}">
+                                        <input type="hidden" name="installment_count" value="{{ installment_count }}">
+
+                                            <button type="button" data-value="5"  class="col-2 btn btn-outline-primary amount-button">
+                                                {%trans '5$'%}
+                                            </button>
+                                            <button type="button" data-value="10"   class="col-2 btn btn-outline-primary amount-button">
+                                                {%trans '10$'%}
+                                            </button>
+                                            <button type="button"  data-value="20"  class="col-2 btn btn-outline-primary amount-button">
+                                                {%trans '20$'%}
+                                            </button>
+                                            <button type="button" data-value="25"  class="col-2 btn btn-outline-primary amount-button">
+                                                {%trans '25$'%}
+                                            </button>
+                                            <button type="button" data-value="30"   class=" col-2 btn btn-outline-primary amount-button">
+                                                {%trans '30$'%}
+                                            </button>
+                                            <button type="button" id="toggleVisibilityButton" class="  btn btn-outline-primary amount-button">
+                                                {%trans 'Other'%}
+                                            </button>
+                                            <label for="payment_amounth" style="display: none;">Amounth Total:</label>
+                                            <input type="text" name="payment_amount" id="payment_amounth" style="display: none;" class="col-12 form-control" >
+                                            <hr>
+                                            <button type="submit"  class=" col-12 btn btn-primary">
+                                                {%trans 'Pay With Card'%}
+                                            </button>
+                                        
+                                        </div>
+                                    </form>
+                                      </div>
+                                      
+                                     
+                                   </div>
+                                   
+                                   
+                                  
+                                </div>
+                             
+                        
+                            </div>
+                            <div class="tab-pane fade" id="paypal-tab" role="tabpanel" aria-labelledby="paypal-tab-v">
+                              
+                            </div>
+                            <div class="tab-pane fade" id="crypto-tab" role="tabpanel" aria-labelledby="crypto-tab-v">
+                             
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div class="tab-pane fade" id="pills-profile-fill" role="tabpanel" aria-labelledby="pills-profile-tab-fill">
+                <table class="table table-borderless" id="invoice-table">
+                    <thead>
+                       <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">{%trans 'Name'%}</th>
+                          <th scope="col">{%trans 'Amount'%}</th>
+                          <th scope="col">{%trans 'Date'%}</th>
+                          <th scope="col">{%trans 'Action'%}</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                        {% for fatura in faturalar %}
+                       <tr>
+                       
+                          <td scope="row">{{ fatura.fatura_no }}</td>
+                          <td>250 adet proxyv6</td>
+                          <td>{{ fatura.miktar }} $</td>
+                          <td>{{ fatura.tarih }}</td>
+                          <td>
+                            <a target="_blank" class="btn btn-primary fatura-view" data-id="{{ fatura.id }}">PDF</a>
+                          </td>
+                       </tr>
+                       {% endfor %}
+                    </tbody>
+                 </table>
+                 {%if not faturalar%}
+                 <h4> {%trans 'Faturanız bulunmamaktadır.'%} </h4>
+                 {%else%}
+                 <div id="pagination">
+                    <button id="prev" class="btn btn-primary btn-sm">Geri</button>
+                    <span id="page-number">1</span>
+                    <button id="next" class="btn btn-primary btn-sm">İleri</button>
+                </div>
+                {%endif%}
+             </div>
+             <div class="tab-pane fade" id="pills-contact-fill" role="tabpanel" aria-labelledby="pills-contact-tab-fill">
+                <table class="table table-borderless" id="payment-table">
+                    <thead>
+                       <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">{%trans 'Ödeme Methodu'%}</th>
+                        <th scope="col">{%trans 'Tutar'%}</th>
+                        <th scope="col">{%trans 'Tarih'%}</th>
+                          
+                       </tr>
+                    </thead>
+                    <tbody>
+                        {% for bakiye in bakiye_history %}
+                       <tr>
+                        <td scope="row">{{ bakiye.id }}</td>
+                          <td >{{ bakiye.payment_method }}</td>
+                          <td>{{ bakiye.bakiye_miktari }}$</td>
+                          <td>{{ bakiye.date_created }}</td>
+                          
+                       </tr>
+                       {% endfor %}
+                    </tbody>
+                 </table>
+                 {%if not bakiye_history%}
+                 <h4> {%trans 'Bakiye geçmişiniz bulunmamaktadır.'%} </h4>
+                 {%else%}
+                 <div id="payment-pagination">
+                    <button id="payment-prev" class="btn btn-primary btn-sm">Geri</button>
+                    <span id="payment-page-number">1</span>
+                    <button id="payment-next" class="btn btn-primary btn-sm">İleri</button>
+                </div>
+                {%endif%}
+                <!-- <table class="table table-borderless">
+                    <thead>
+                       <tr>
+                          <th scope="col">{%trans 'Ödeme Methodu'%}</th>
+                          <th scope="col">{%trans 'Tutar'%}</th>
+                          <th scope="col">{%trans 'Tarih'%}</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                        {% for bakiye in bakiye_history %}
+                       <tr>
+                          <th scope="row">{{ bakiye.payment_method }}</th>
+                          <td >{{ bakiye.bakiye_miktari }}</td>
+                          <td>{{ bakiye.date_created }}</td>
+                       </tr>
+                       {% endfor %}
+                    </tbody>
+                 </table>-->             </div>
+          </div>
+          
+       </div>
+    </div>
+ </div>
+{%endblock content%}
+
+{%block js%}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    function setErrorMessage(inputElement, message) {
+    const errorElement = inputElement.nextElementSibling;
+    errorElement.textContent = message;
+    errorElement.style.color = 'red';
+}
+
+
+function clearErrorMessage(inputElement) {
+    const errorElement = inputElement.nextElementSibling;
+    errorElement.textContent = '';
+    errorElement.style.color = '';
+}
+   function validateFormData() {
+    let isValid = true;
+    let errorMessage = "";
+    
+    const ccOwner = document.getElementsByName('cc_owner')[0].value;
+    if (!ccOwner || ccOwner.split(' ').length < 2) {
+
+        setErrorMessage(document.getElementById('name'), "Lütfen ad ve soyad giriniz.");
+        isValid = false;
+    } else {
+        clearErrorMessage(document.getElementById('name'));
+    }
+
+   
+    const cardNumber = document.getElementsByName('card_number')[0].value.replace(/\s+/g, '');
+    console.log(cardNumber)
+    if (cardNumber.length !== 16) {
+        errorMessage = "Kredi kartı numarası 16 haneli olmalıdır.";
+        document.getElementById('card-number-text').nextElementSibling.textContent = errorMessage;
+        isValid = false;
+    } else {
+        document.getElementById('card-number-text').nextElementSibling.textContent = "";
+    }
+
+    const expiryMonth = document.getElementsByName('expiry_month')[0].value;
+    if (expiryMonth < 1 || expiryMonth > 12) {
+        errorMessage = "Geçersiz ay.";
+        document.getElementById('sktarih-ay').nextElementSibling.textContent = errorMessage;
+        isValid = false;
+    } else {
+        document.getElementById('sktarih-ay').nextElementSibling.textContent = "";
+    }
+
+    
+    const expiryYear = document.getElementsByName('expiry_year')[0].value;
+    if (expiryYear.length !== 2 || isNaN(expiryYear)) {
+        errorMessage = "Yıl 2 haneli olmalıdır.";
+        document.getElementById('sktarih-yil').nextElementSibling.textContent = errorMessage;
+        isValid = false;
+    } else {
+        document.getElementById('sktarih-yil').nextElementSibling.textContent = "";
+    }
+
+    const cvv = document.getElementsByName('cvv')[0].value;
+    if (cvv.length !== 3) {
+        errorMessage = "CVV 3 haneli olmalıdır.";
+        document.getElementById('cvv').nextElementSibling.textContent = errorMessage;
+        isValid = false;
+    } else {
+        document.getElementById('cvv').nextElementSibling.textContent = "";
+    }
+
+    if (isValid) {
+        const saveCheck = document.querySelector('.save-check').checked;
+        const merchantOid = document.getElementById('user-id').value;
+        console.log(saveCheck)
+        const postData = {
+            cc_owner: ccOwner,
+            card_number: cardNumber,
+            expiry_month: expiryMonth,
+            expiry_year: expiryYear,
+            cvv: cvv,
+            saveCheck: saveCheck,
+            oid: merchantOid
+        };
+
+        return postData;
+        
+    }
+   
+}
+
+$(document).ready(function(){
+    var rowsPerPage = 5;
+        var rows = $('#invoice-table tbody tr');
+        var rowsCount = rows.length;
+        var pageCount = Math.ceil(rowsCount / rowsPerPage); // Toplam sayfa sayısı
+        var currentPage = 1;
+
+        // İlk gösterimde ilk sayfayı göster
+        rows.hide();
+        rows.slice(0, rowsPerPage).show();
+
+        $('#next').click(function(e) {
+            if (currentPage < pageCount) {
+                currentPage++;
+                var start = (currentPage - 1) * rowsPerPage;
+                var end = start + rowsPerPage;
+
+                rows.hide().slice(start, end).show();
+                $('#page-number').text(currentPage);
+            }
+        });
+
+        $('#prev').click(function(e) {
+            if (currentPage > 1) {
+                currentPage--;
+                var start = (currentPage - 1) * rowsPerPage;
+                var end = start + rowsPerPage;
+
+                rows.hide().slice(start, end).show();
+                $('#page-number').text(currentPage);
+            }
+        });
+
+
+        var rowsPerPagePayment = 5;
+        var rowsPayment = $('#payment-table tbody tr');
+        var rowsCountPayment = rowsPayment.length;
+        var pageCountPayment = Math.ceil(rowsCountPayment / rowsPerPagePayment);
+        var currentPagePayment = 1;
+
+        // İlk gösterimde ilk sayfayı göster
+        rowsPayment.hide();
+        rowsPayment.slice(0, rowsPerPagePayment).show();
+
+        $('#payment-next').click(function(e) {
+            if (currentPagePayment < pageCountPayment) {
+                currentPagePayment++;
+                var start = (currentPagePayment - 1) * rowsPerPagePayment;
+                var end = start + rowsPerPagePayment;
+
+                rowsPayment.hide().slice(start, end).show();
+                $('#payment-page-number').text(currentPagePayment);
+            }
+        });
+
+        $('#payment-prev').click(function(e) {
+            if (currentPagePayment > 1) {
+                currentPagePayment--;
+                var start = (currentPagePayment - 1) * rowsPerPagePayment;
+                var end = start + rowsPerPagePayment;
+
+                rowsPayment.hide().slice(start, end).show();
+                $('#payment-page-number').text(currentPagePayment);
+            }
+        });
+  
+  $(".fatura-view").on("click", function(e){
+    e.preventDefault();
+    var faturaID = $(this).data("id");
+    var newUrl = "/panel/fatura-view/" + faturaID;
+    window.open(newUrl, '_blank');
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    
+        var addCardLink = document.getElementById('add-card-link');
+        addCardLink.addEventListener('click', function(e) {
+            e.preventDefault();  
+            document.getElementById('name').value = '';
+            document.getElementById('card-number-text').value = '';
+            document.getElementById('sktarih-ay').value = '';
+            document.getElementById('sktarih-yil').value = '';
+            document.getElementById('cvv').value = '';
+        });
+    });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('payment-form');
+    const addCardLink = document.getElementById('add-card-link');
+    const checkboxes = document.querySelectorAll('.card_check');
+    const popupContainer = document.getElementById('popup-container');
+
+
+    function handleCheckboxChange() {
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        this.checked = true;
+
+        const td = this.closest('tr').querySelector('td');
+        const inputs = td.querySelectorAll('input[type="hidden"]');
+        const ccOwnerInput = document.getElementById('name');
+        const cardNumberInput = document.getElementById('card-number-text');
+        const expiryMonthInput = document.getElementById('sktarih-ay');
+        const expiryYearInput = document.getElementById('sktarih-yil');
+        const cvvInput = document.getElementById('cvv');
+
+        ccOwnerInput.value = inputs[1].value;
+        cardNumberInput.value = inputs[0].value;
+        expiryMonthInput.value = inputs[2].value;
+        expiryYearInput.value = inputs[3].value;
+        cvvInput.value = inputs[4].value;
+
+        popupContainer.style.display = 'none';
+    }
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', handleCheckboxChange);
+    });
+
+   
+    function handleAddCardLinkClick(event) {
+        event.preventDefault();
+        const allUnchecked = Array.from(checkboxes).every(checkbox => !checkbox.checked);
+
+        if (allUnchecked) {
+            const popupInputs = popupContainer.querySelectorAll('input[type="text"]');
+            popupInputs.forEach(input => {
+                input.value = '';
+            });
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        popupContainer.style.display = 'block';
+    }
+
+    addCardLink.addEventListener('click', handleAddCardLinkClick);
+});
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('payment-form');
+
+    form.addEventListener('submit', function(event) {
+
+
+        event.preventDefault(); 
+        if($('.save-check').is(":checked")){
+            var saveCheck = true;
+        }else{
+            var saveCheck = false;
+        }
+        console.log(saveCheck)
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const userId = document.getElementById('user-id').value;
+        const merchantOid = document.getElementsByName('merchant_oid')[0].value;
+        const paymentAmounth = document.getElementById('payment_amounth').value;
+        const paytrTokenInput = document.getElementsByName('paytr_token')[0];
+        const paytrUserBasket = document.getElementsByName('user_basket')[0];
+        var postData = validateFormData()
+        if (postData === undefined) {
+        return; // postData undefined ise, fonksiyonu burada sonlandır
+        }
+        console.log(postData)
+        fetch(`/panel/add-card`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(postData)
+        })
+        .then(response => response.json())
+        .then(data => {
+        console.log('Cevap:', data);
+        })
+        .then(() => {
+            return fetch(`/panel/hesap/${merchantOid}/${paymentAmounth}`);
+        })
+        .then(response => response.json())
+        .then(data => {
+            paytrTokenInput.value = data.paytr_token;
+            
+            form.submit();
+        })
+        .catch(error => {
+            console.error('Bir hata oluştu:', error);
+        });
+    });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll('.amount-button');
+    const input = document.getElementById('payment_amounth');
+    const otherButton = document.getElementById('toggleVisibilityButton');
+    const label = document.querySelector('label[for="payment_amounth"]')
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+     
+            buttons.forEach(btn => btn.classList.remove('btn-primary'));
+            buttons.forEach(btn => btn.classList.add('btn-outline-primary'));
+
+  
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-primary');
+
+     
+            if (button === otherButton) {
+                input.style.display = 'block';
+                label.style.display = 'block';
+                input.value = '';
+            } else {
+   
+                input.style.display = 'none';
+                label.style.display = 'none';
+                input.value = button.getAttribute('data-value');
+            }
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteIcons = document.querySelectorAll(".delete-icon");
+
+    deleteIcons.forEach(icon => {
+        icon.addEventListener("click", function() {
+            const id = this.getAttribute("data-id");
+            window.location.href = "/panel/delete-card/" + id;
+        });
+    });
+});
+      $(document).ready(function () {
+    
+        $("#add-card-link").click(function (e) {
+            e.preventDefault();
+            $("#popup-container").show(); 
+        });
+
+
+        $("#pay-exit").click(function (e) {
+            e.preventDefault(); 
+            $("#popup-container").hide();
+        });
+    });
+    $(document).ready(function(){
+        $("#name").keyup(function(){
+            var name = $("#name").val();
+            $(".credit-author").text(name)
+        });
+        $("#sktarih-ay").keyup(function(){
+            var sktay = $("#sktarih-ay").val();
+            $(".skt-ay").text(sktay)
+        });
+        $("#sktarih-yil").keyup(function(){
+            var sktyil = $("#sktarih-yil").val();
+            $(".skt-yil").text(sktyil)
+        });
+        $("#card-number-text").keyup(function(){
+            var originalValue = $(this).val();
+    var formattedValue = '';
+    
+    // Tüm boşlukları ve sayı olmayan karakterleri kaldır
+    originalValue = originalValue.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+
+    // Maksimum 16 hane sınırlaması
+    if (originalValue.length > 16) {
+        originalValue = originalValue.substring(0, 16);
+    }
+
+    // Her 4 haneden sonra boşluk ekle
+    formattedValue = originalValue.replace(/(.{4})/g, '$1 ').trim();
+
+    // Formatlanmış değeri görüntüle
+    $(this).val(formattedValue);
+
+    // Orijinal, boşluksuz değeri gizli input'a kaydet
+    $('input[name="card_number"]').val(originalValue);
+        });
+        $("#card-number-text").keyup(function(){
+            var cartnumber = $("#card-number-text").val();
+            var cartnumber1 = cartnumber.slice(0,1);
+            if(cartnumber1=='5'){
+                $(".carttype").addClass("fa-cc-mastercard");
+            }
+            if(cartnumber1=='4'){
+                $(".carttype").addClass("fa-cc-visa");
+            }
+        });
+    });
+</script>
+{%endblock js%}

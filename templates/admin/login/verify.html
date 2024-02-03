@@ -1,0 +1,109 @@
+{%load static%}
+{% load i18n %}
+<!doctype html>
+<html lang="en">
+   
+<!-- Mirrored from templates.iqonic.design/vito/html/main/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 09 Jul 2023 22:32:45 GMT -->
+<head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>Login</title>
+      <!-- Favicon -->
+      <link rel="shortcut icon" href="{%static 'panel/images/favicon.ico'%}" />
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/bootstrap.min.css'%}">
+      <!-- Typography CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/typography.css'%}">
+      <!-- Style CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/style.css'%}">
+      <!-- Responsive CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/responsive.css'%}">
+   </head>
+   <body>
+      <!-- loader Start -->
+      <div id="loading">
+         <div id="loading-center">
+         </div>
+      </div>
+      <!-- loader END -->
+        <!-- Sign in Start -->
+        <section class="sign-in-page">
+            <div class="container bg-white mt-5 p-0">
+                <div class="row no-gutters">
+                    <div class="col-sm-6 align-self-center">
+                        <div class="sign-in-from">
+                            <h1 class="mb-0 dark-signin">Login</h1>
+                            <p>Enter your email address and password to access admin panel.</p>
+                            <form method="POST"  class="mt-4">
+                                {%csrf_token%}
+
+                                {% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert text-white bg-danger" role="alert">
+                <div class="iq-alert-text">{{ message }}</div>
+            </div>
+        {% elif message.tags == 'success' %}
+            <div class="alert text-white bg-success" role="alert">
+                <div class="iq-alert-text">{{ message }}</div>
+            </div>
+        {% else %}
+            <div class="alert text-white bg-info" role="alert">
+                <div class="iq-alert-text">{{ message }}</div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Doğrulama Kodu</label>
+                                    <input type="password" name="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+                                </div>
+                                <div class="d-inline-block w-100">
+                                   
+                                    <button type="submit" class="btn btn-primary float-right">Sign in</button>
+                                </div>
+                               
+                            </form>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </section>
+        <!-- Sign in END -->
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="{%static 'panel/js/jquery.min.js'%}"></script>
+      <script src="{%static 'panel/js/popper.min.js'%}"></script>
+      <script src="{%static 'panel/js/bootstrap.min.js'%}"></script>
+      <!-- Appear JavaScript -->
+      <script src="{%static 'panel/js/jquery.appear.js'%}"></script>
+      <!-- Countdown JavaScript -->
+      <script src="{%static 'panel/js/countdown.min.js'%}"></script>
+      <!-- Counterup JavaScript -->
+      <script src="{%static 'panel/js/waypoints.min.js'%}"></script>
+      <script src="{%static 'panel/js/jquery.counterup.min.js'%}"></script>
+      <!-- Wow JavaScript -->
+      <script src="{%static 'panel/js/wow.min.js'%}"></script>
+      <!-- Apexcharts JavaScript -->
+      <script src="{%static 'panel/js/apexcharts.js'%}"></script>
+      <!-- Slick JavaScript -->
+      <script src="{%static 'panel/js/slick.min.js'%}"></script>
+      <!-- Select2 JavaScript -->
+      <script src="{%static 'panel/js/select2.min.js'%}"></script>
+      <!-- Owl Carousel JavaScript -->
+      <script src="{%static 'panel/js/owl.carousel.min.js'%}"></script>
+      <!-- Magnific Popup JavaScript -->
+      <script src="{%static 'panel/js/jquery.magnific-popup.min.js'%}"></script>
+      <!-- Smooth Scrollbar JavaScript -->
+      <script src="{%static 'panel/js/smooth-scrollbar.js'%}"></script>
+      <!-- Chart Custom JavaScript -->
+      <script src="{%static 'panel/js/chart-custom.js'%}"></script>
+      <!-- Custom JavaScript -->
+      <script src="{%static 'panel/js/custom.js'%}"></script>
+   </body>
+
+<!-- Mirrored from templates.iqonic.design/vito/html/main/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 09 Jul 2023 22:32:46 GMT -->
+</html>

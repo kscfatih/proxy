@@ -1,0 +1,230 @@
+{%extends 'admin/base/index.html'%}
+{% load i18n %}
+{%load static%}
+{%block css%}
+<style>
+  .serversborder-head-left {
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  border:none;
+}
+.serversborder-head-right {
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 20px;
+  border:none;
+}
+.my-table {
+  border-collapse: separate; /* Hücre kenarları için ayrı seçenek */
+  border-spacing: 0px 8px;   /* Satır ve sütun arasındaki boşluklar */
+}
+
+.my-table td {
+  border: 1px solid #000;    /* Hücre kenarları için sınırlar */
+  padding: 5px;              /* Hücre içeriği ile kenar arasındaki boşluk */
+  text-align: center;        /* İçeriği yatay olarak ortala */
+  vertical-align: middle;    /* İçeriği dikey olarak ortala */
+}
+.my-table th {
+  border: 1px solid #000;    /* Hücre kenarları için sınırlar */             /* Hücre içeriği ile kenar arasındaki boşluk */
+  text-align: center;        /* İçeriği yatay olarak ortala */
+  vertical-align: middle;    /* İçeriği dikey olarak ortala */
+}
+.serversborder-left {
+
+
+ 
+  border-top-left-radius: 20px;
+border-bottom-left-radius: 20px;
+
+}
+
+.background-light-color {
+        background-color: #f2edff;
+        
+    }
+.background-hard-color {
+        background-color: #b397f8;
+        
+    }
+.serversborder-right {
+border-top-right-radius: 20px;
+border-bottom-right-radius: 20px;
+}
+.table-td{
+   height:60px;
+}
+</style>
+{%endblock css%}  
+{%block content%}
+<div class="row">
+    <div class="col-sm-12 col-lg-12">
+       <div class="iq-card">
+         
+          <div class="iq-card-body">
+             <table class="table my-table">
+                <thead  style="border:none;">
+                   <tr>
+                      <th style="border:none; color: white; font-weight: bold;"  class="serversborder-head-left background-hard-color" scope="col">
+                        {%trans 'Type'%}
+                     </th>
+                      <th style="border:none; color: white; font-weight: bold;" class="background-hard-color" scope="col">
+                        {%trans 'Quantity'%}
+                     </th>
+                      <th style="border:none; color: white; font-weight: bold;" class="background-hard-color" scope="col">
+                        {%trans 'Location'%}
+                     </th>
+                     <th style="border:none; color: white; font-weight: bold;" class="background-hard-color" scope="col">
+                        {%trans 'Status'%}
+                     </th>
+                      <th style="border:none; color: white; font-weight: bold;" class="background-hard-color" scope="col">
+                        {%trans 'Uptime'%}
+                     </th>
+                      <th  style="border:none; color: white; font-weight: bold;" class="serversborder-head-right background-hard-color" scope="col">
+                        {%trans 'Edit'%}
+                     </th>
+                   </tr>
+                </thead>
+                <tbody>
+                  
+                  {% for i in user_proxies%}
+                   <tr >
+                    <input type="hidden" class="proxy-id" value="{{i.id}}">
+                      <th onclick="redirect(event, this)" style="cursor: pointer; border:none; color: #6546d2; font-weight: bold; font-size:16px;" class="serversborder-left background-light-color table-td" scope="row">
+                        {{ i.type }}
+                     </th>
+                      <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="background-light-color table-td">
+                        {{ i.quantity }}
+                     </td>
+                      <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="background-light-color table-td">
+                        <img src="{{i.server.image}}" height="10" weight="5" >
+                    
+                        {{ i.server.location }}
+                     </td> 
+                     <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="background-light-color table-td">
+                        <span id="status" ></span>
+                         {% for x in task_ids %}
+                         {% if x.proxy_id == i.id %}
+                            <input type="hidden" value="{{ x.task_id }}" class="task_id"> 
+                         {% endif %}
+                     {% endfor %}
+                     </td> 
+                      <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="background-light-color table-td">
+                        {{ i.date_created }}
+
+                       
+                    
+                     
+                     
+                     </td>
+
+                     
+                      <td onclick="redirect(event, this)" style="cursor: pointer; border:none;  font-size:16px;" class="serversborder-right background-light-color table-td" >
+                        <a href="/panel/view_proxy/{{ i.id }}" class="btn btn-primary">Edit</a>
+                     </td>
+                   </tr>
+                 {%endfor%}
+                </tbody>
+             </table>
+             {%if user_proxies%}
+             <div class="pagination ">
+              {% if user_proxies.has_previous %}
+                  <a href="?page=1" class="btn btn-primary mr-2">İlk Sayfa</a>
+                  <a href="?page={{ user_proxies.previous_page_number }}" class="btn btn-primary">Geri</a>
+              {% endif %}
+          
+              <span class=" mr-2 ml-2">Sayfa {{ user_proxies.number }} / {{ user_proxies.paginator.num_pages }}</span>
+          
+              {% if user_proxies.has_next %}
+                  <a href="?page={{ user_proxies.next_page_number }}" class="btn btn-primary mr-2">İleri</a>
+                  <a href="?page={{ user_proxies.paginator.num_pages }}" class="btn btn-primary">Son Sayfa</a>
+              {% endif %}
+          </div>
+          {%else%}
+          <div class="row">
+            <div class="col-4">
+              <h4>{%trans 'Proxy Hizmeti Bulunmamaktadır. '%}</h4>
+            </div>
+          
+         <div class="col-4">
+          <a class="btn btn-primary" target="_blank" href="/panel/create" > {%trans ' + Proxy Ekle'%} </a>
+        </div>
+         </div>
+          {%endif%}
+          </div>
+       </div>
+       </div>
+       </div>
+
+{%endblock content%}
+
+{%block js%}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+   function redirect(event, cell) {
+    var cellIndex = Array.from(cell.parentNode.children).indexOf(cell);
+    if (cellIndex === 0 || cellIndex === 5) {
+      return; 
+    }
+
+    var serverId = cell.parentNode.querySelector('.proxy-id').value;
+    window.location.href = '/panel/view_proxy/' + serverId;
+  }
+
+
+  function checkTasks() {
+    console.log('AJAX set. Task ID öğelerinin sayısı: ' + $(".task_id").length);
+    
+    var requests = [];
+    $(".task_id").each(function() {
+    var task_id = $(this).val(); 
+    var parent_td = $(this).parent();  
+    var status_span = parent_td.find('#status'); 
+    var parent_tr = parent_td.closest('tr'); // tr elementini seç
+
+    requests.push($.ajax({
+        url: "/panel/task/" + task_id,
+        type: "GET",
+        success: function(response){
+            if(response.status === 'running') {
+                status_span.html('<i class="fa-solid fa-spinner fa-spin" style="color:orange;"></i> loading');
+                parent_tr.css('pointer-events', 'none'); // tıklanamaz yap
+                parent_tr.css('opacity', '0.5'); // opaklığı azalt
+                console.log('loading.');
+            } else if(response.status === 'completed') {
+                status_span.html('<i class="fa-solid fa-circle fa-beat-fade fa-2xs" style="color: green;"></i> running');
+                parent_tr.css('pointer-events', 'auto'); // tekrar tıklanabilir yap
+                parent_tr.css('opacity', '1'); // opaklığı normal yap
+                console.log('running.');
+            }
+            console.log('İstek atıldı.');
+        },
+        error: function(){
+            console.log('AJAX request failed.');
+        }
+    }));
+});
+    $.when.apply($, requests).then(function() {
+        var allCompleted = true;
+        for(var i = 0; i < arguments.length; i++) {
+            if(arguments[i][0].status !== 'completed') {
+                allCompleted = false;
+                break;
+            }
+        }
+
+        if(allCompleted){
+            clearInterval(intervalId);
+        }
+    });
+}
+
+// Sayfa yüklendiğinde fonksiyonu bir kez çalıştır
+$(document).ready(function() {
+    checkTasks();
+    // Daha sonra 1 saniyelik aralıklarla tekrar et
+    intervalId = setInterval(checkTasks, 1000);
+});
+
+
+</script>
+{%endblock js%}

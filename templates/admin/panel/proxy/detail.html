@@ -1,0 +1,148 @@
+{%extends 'admin/base/index.html'%}
+{%load static%}
+{% load i18n %}
+{%block content%}
+
+    <div class="container-fluid">
+      <div class="row">
+         <div class="col-12">
+            <a href="/panel/my-proxies" class="btn btn-primary mb-3"><i class="fa-solid fa-arrow-left"></i> {%trans 'Back'%} </a>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-lg-12">
+            {% if error_message %}
+            <p>Error: {{ error_message }}</p>
+            {% endif %}
+         </div>
+         <div class="col-sm-6">
+            <div class="iq-card">
+               <div class="iq-card-header d-flex justify-content-between">
+                  <div class="iq-header-title">
+                     <h4 class="card-title"> {%trans 'Proxy Listesi'%}    <button id="copyButton" class="btn btn-primary copy-button">Copy</button></h4>
+                  </div>
+               </div>
+               <div class="iq-card-body">
+                  <textarea class="form-control" id="proxyInput" rows="9" cols="50" placeholder="Proxy bilgilerini buraya girin..." readonly>{{ file_content }}</textarea><br>
+               
+               </div>
+            </div>
+         </div>
+         <div class="col-sm-6">
+            <div class="row">
+               <div class="col-12">
+                  <div class="iq-card">
+                     <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title"> {%trans 'Çıktı Al'%} </h4>
+                        </div>
+                     </div>
+                     <div class="iq-card-body">
+                        <div class="row">
+                           <div class="col-6">
+                              <select class="form-control"  id="formatSelect" >
+                                 <option value="ip_port_user_pass">ip:port:user:password</option>
+                                 <option value="user_pass_ip_port">user:password:ip:port</option>
+                                 <option value="ip_port_pass_user">ip:port:password:user</option>
+                                 <option value="pass_user_ip_port">password:user:ip:port</option>
+                               </select>
+                           </div>
+                           <div class="col-6">
+                              <button class="btn btn-primary" onclick="generateAndDownload()"> txt İndir</button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-12">
+                  <div class="iq-card">
+                     <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title"> {%trans 'Kimlik Bilgileri'%} </h4>
+                        </div>
+                     </div>
+                     <div class="iq-card-body">
+                        <form  method="post">
+                           {%csrf_token%}
+                           <div class="row">
+                              <div class="col-4">
+                                 <label for="username">{%trans 'Username'%}</label>
+                                  <input type="text" class="form-control" id="username" name="username" value="{{username}}"  spellcheck="false" data-ms-editor="true" required>
+                               </div>
+                               <div class="col-4">
+                                  <label for="password">{%trans 'Password'%}</label>
+                                  <input type="text" class="form-control" id="password" name="password" value="{{password}}" spellcheck="false" data-ms-editor="true" required>
+                               </div>
+                               <div class="col-4">
+                                  <button type="submit" class="btn btn-primary mt-4" id="update"> {%trans 'Güncelle'%} </button>
+                               </div> 
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+            
+            
+           
+            
+          
+      </div>
+    </div>
+ 
+ {%endblock content%}
+
+ {%block js%}
+ <script>
+   $(document).ready(function() {
+    $("#copyButton").click(function() {
+        var proxyInput = $("#proxyInput");
+        proxyInput.select();
+        document.execCommand("copy");
+
+        $(this).text("Copied");
+
+        setTimeout(() => $(this).text("Copy"), 3000);
+    });
+});
+function generateAndDownload() {
+    var proxyData = document.getElementById('proxyInput').value;
+
+    var format = document.getElementById('formatSelect').value;
+
+    var lines = proxyData.split('\n').filter(line => line.trim() !== '');
+
+    var formattedLines = lines.map(line => {
+        var parts = line.split(':');
+        if(parts.length !== 4) {
+          
+            return '';
+        }
+        switch(format) {
+            case 'user_pass_ip_port':
+                return `${parts[2]}:${parts[3]}:${parts[0]}:${parts[1]}`;
+            case 'ip_port_pass_user':
+                return `${parts[0]}:${parts[1]}:${parts[3]}:${parts[2]}`;
+            case 'pass_user_ip_port':
+                return `${parts[3]}:${parts[2]}:${parts[0]}:${parts[1]}`;
+            default: 
+                return line;
+        }
+    });
+
+    var formattedData = formattedLines.filter(line => line.trim() !== '').join('\n');
+
+    var blob = new Blob([formattedData], {type: 'text/plain'});
+
+    var downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.download = 'proxies.txt';
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+ </script>
+ {%endblock js%}

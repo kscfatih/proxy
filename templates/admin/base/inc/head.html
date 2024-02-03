@@ -1,0 +1,29 @@
+{%load static%}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="csrf-token" content="{{ csrf_token }}">
+<title>proxyv</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="shortcut icon" href="{%static 'panel/images/favicon.ico'%}" />
+<link rel="stylesheet" href="{%static 'panel/css/bootstrap.min.css'%}">
+<link rel="stylesheet" href="{%static 'panel/css/typography.css'%}">
+<link rel="stylesheet" href="{%static 'panel/css/style.css'%}">
+<link rel="stylesheet" href="{%static 'panel/css/responsive.css'%}">
+<script src="https://kit.fontawesome.com/e057bf7f2c.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+  var userId = $("#user-id").val(); 
+  $.ajax({
+    type: "GET",
+    url: "/panel/balance-check/" + userId, 
+    success: function(response) {
+      var message = response.message; 
+      $("#balance-ad").text(message);
+    },
+    error: function(error) {
+      console.error("AJAX error:", error);
+    }
+  });
+});
+</script>

@@ -1,0 +1,43 @@
+{%load static%}
+{% load i18n %}
+<div class="iq-sidebar">
+    <div class="iq-sidebar-logo d-flex justify-content-between">
+       <a href="/panel">
+         <span><b>proxy</b></span>
+       <div class="iq-light-logo">
+          <img style="margin-left:5px;" src="{%static 'panel/images/logo.gif'%}" class="img-fluid" alt="">
+       </div>
+       <div class="iq-dark-logo">
+          <img src="{%static 'panel/images/logo-dark.gif'%}" class="img-fluid" alt="">
+       </div>
+       
+       </a>
+       <div class="iq-menu-bt-sidebar">
+             <div class="iq-menu-bt align-self-center">
+                <div class="wrapper-menu">
+                   <div class="main-circle"><i class="ri-arrow-left-s-line"></i></div>
+                   <div class="hover-circle"><i class="ri-arrow-right-s-line"></i></div>
+                </div>
+             </div>
+          </div>
+    </div>
+    <div id="sidebar-scrollbar">
+       <nav class="iq-sidebar-menu">
+          <ul id="iq-sidebar-toggle" class="iq-menu">
+             <li>
+                <a href="/panel" class="iq-waves-effect" ><i style="margin-left:7px;" class="fa fa-home"></i><span style="margin-left:3px;">{% trans 'Homepage' %}</span></a>
+             </li> 
+             <li>
+               <a href="{%url 'panel:my-proxies'%}" class="iq-waves-effect" ><i style="margin-left:5px;" class="fa fa-wifi" aria-hidden="true"></i><span style="margin-left:5px;">{% trans 'My proxies' %}</span></a>
+            </li> 
+            <li>
+               <a href="{%url 'panel:ticket'%}" class="iq-waves-effect" ><i style="margin-left:9px;" class="fa fa-envelope-open-text"></i><span>{% trans 'Ticket' %}</span></a>
+            </li> 
+            <li>
+               <a href="{%url 'panel:payment'%}" class="iq-waves-effect" ><i style="margin-left:12px;" class="fa fa-file-invoice"></i><span>{% trans 'İnvoice' %}</span></a>
+            </li> 
+          </ul>
+       </nav>
+       <div class="p-3"></div>
+    </div>
+ </div>

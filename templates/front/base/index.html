@@ -1,0 +1,20 @@
+{%load static%}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {%include 'front/base/inc/head.html'%}
+    </head>
+    <body>
+        <div id="wrapper">
+           {%include  'front/base/inc/header.html'%}
+            <main id="main" class="site-main">
+                <div class="site-content pt0 pb0">
+                   {%block content%} {%endblock content%}
+                </div>
+            </main>
+            {%include 'front/base/inc/footer.html'%}
+        </div>
+        {%include 'front/base/inc/js.html'%}
+    </body>
+</html>

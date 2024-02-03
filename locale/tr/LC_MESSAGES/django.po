@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-30 20:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: templates/admin/base/inc/navbar.html:46
+msgid "Balance"
+msgstr ""
+
+#: templates/admin/base/inc/sidebar.html:28
+msgid "Homepage"
+msgstr "Anasayfa"
+
+#: templates/admin/base/inc/sidebar.html:31
+msgid "My proxies"
+msgstr "Proxylerim"
+
+#: templates/admin/base/inc/sidebar.html:34
+msgid "Ticket"
+msgstr "Destek Talebi"
+
+#: templates/admin/base/inc/sidebar.html:37
+msgid "İnvoice"
+msgstr "Ödeme"
+
+#: templates/admin/panel/proxy/create.html:35
+#, fuzzy
+#| msgid "My proxies"
+msgid "Proxies"
+msgstr "Proxylerim"
+
+#: templates/admin/panel/proxy/create.html:74
+msgid "Country"
+msgstr "Ülke"
+
+#: templates/admin/panel/proxy/create.html:76
+#: templates/admin/panel/proxy/create.html:88
+#: templates/admin/panel/proxy/create.html:96
+msgid "Select"
+msgstr "Seçiniz"
+
+#: templates/admin/panel/proxy/create.html:82
+msgid "Please select a location first."
+msgstr "Lütfen öncelikle lokasyon seçiniz."
+
+#: templates/admin/panel/proxy/create.html:86
+#: templates/admin/panel/proxy/index.html:56
+msgid "Type"
+msgstr "Tip"
+
+#: templates/admin/panel/proxy/create.html:86
+msgid "(recommended HTTPs)"
+msgstr "(Önerilen HTTPs)"
+
+#: templates/admin/panel/proxy/create.html:94
+msgid "Time period"
+msgstr "Zaman Periyodu"
+
+#: templates/admin/panel/proxy/create.html:97
+#: templates/admin/panel/proxy/create.html:98
+msgid "Day"
+msgstr "Gün"
+
+#: templates/admin/panel/proxy/create.html:99
+msgid "Month"
+msgstr "Ay"
+
+#: templates/admin/panel/proxy/create.html:106
+#: templates/admin/panel/proxy/create.html:141
+#: templates/admin/panel/proxy/index.html:59
+msgid "Quantity"
+msgstr "Adet"
+
+#: templates/admin/panel/proxy/create.html:110
+msgid "Site to use"
+msgstr "Kullanıllacak site"
+
+#: templates/admin/panel/proxy/create.html:113
+msgid "Check"
+msgstr "Kontrol Et"
+
+#: templates/admin/panel/proxy/create.html:115
+msgid "Please enter a site name."
+msgstr "Lütfen site ismi giriniz."
+
+#: templates/admin/panel/proxy/create.html:118
+msgid "Please enter a valid site format, e.g., .com, .net."
+msgstr "Lütfen uygun formatta bir site ismi girin (.com, .net, .io vb.)."
+
+#: templates/admin/panel/proxy/create.html:124
+msgid "Authentication settings"
+msgstr "Kimlik Ayarları"
+
+#: templates/admin/panel/proxy/create.html:125
+msgid "Automatic"
+msgstr "Otomatik"
+
+#: templates/admin/panel/proxy/create.html:126
+msgid "User&Password"
+msgstr "KullanıcıAdı&Şifre"
+
+#: templates/admin/panel/proxy/create.html:127
+msgid "White List"
+msgstr "Beyaz Liste"
+
+#: templates/admin/panel/proxy/create.html:140
+msgid "Total"
+msgstr "Toplam"
+
+#: templates/admin/panel/proxy/create.html:142
+msgid "Price"
+msgstr "Fiyat"
+
+#: templates/admin/panel/proxy/create.html:144
+msgid "Site Checker"
+msgstr "Site Kontrolü"
+
+#: templates/admin/panel/proxy/create.html:152
+msgid "Buy"
+msgstr "Öde"
+
+#: templates/admin/panel/proxy/create.html:213
+msgid "User name"
+msgstr "Kullanıcı Adı"
+
+#: templates/admin/panel/proxy/create.html:218
+msgid "Password"
+msgstr "Şifre"
+
+#: templates/admin/panel/proxy/create.html:234
+msgid "Ip adresses"
+msgstr "Ip Adresi"
+
+#: templates/admin/panel/proxy/index.html:47
+msgid "Create Proxy"
+msgstr "Proxy Ekle"
+
+#: templates/admin/panel/proxy/index.html:62
+msgid "Location"
+msgstr "Lokasyon"
+
+#: templates/admin/panel/proxy/index.html:65
+msgid "Status"
+msgstr "Durum"
+
+#: templates/admin/panel/proxy/index.html:68
+msgid "Uptime"
+msgstr "Tarih"
+
+#: templates/admin/panel/proxy/index.html:71
+msgid "Wiew"
+msgstr "Görüntüle"
+
+#: templates/admin/payment/index.html:12
+msgid "Billing"
+msgstr "Ödeme"
+
+#: templates/admin/payment/index.html:18
+msgid "Make Payment"
+msgstr "Ödeme yap"
+
+#: templates/admin/payment/index.html:21
+msgid "Invoices"
+msgstr "Faturalar"
+
+#: templates/admin/payment/index.html:32
+msgid "Credit Cart"
+msgstr "Kredi kartı"
+
+#: templates/admin/payment/index.html:33
+msgid "Paypal"
+msgstr ""
+
+#: templates/admin/payment/index.html:34
+msgid "Crypto"
+msgstr ""
+
+#: templates/admin/payment/index.html:101
+msgid "Name"
+msgstr ""
+
+#: templates/admin/payment/index.html:102
+msgid "Amount"
+msgstr ""
+
+#: templates/admin/payment/index.html:103
+msgid "Date"
+msgstr ""
+
+#: templates/admin/payment/index.html:104
+msgid "Action"
+msgstr ""
+
+#: templates/admin/rastgele.html:7 templates/admin/rastgele.html:10
+msgid "hikaye"
+msgstr ""
+
+#: v4proxy/settings.py:119
+msgid "English"
+msgstr ""
+
+#: v4proxy/settings.py:120
+msgid "Turkish"
+msgstr ""

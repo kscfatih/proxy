@@ -1,0 +1,316 @@
+{%extends 'admin/base/index.html'%}
+{%load static%}
+{% load i18n %}
+{%block css%}
+<style>
+   .container {
+       display: flex;
+       justify-content: space-between;
+       padding: 20px;
+   }
+   .ticket-list {
+       width: 30%;
+       border: 1px solid #ccc;
+       padding: 10px;
+   }
+   .ticket {
+       border: 1px solid #ccc;
+       padding: 10px;
+       margin-bottom: 10px;
+   }
+   .ticket-content {
+       width: 60%;
+       border: 1px solid #ccc;
+       padding: 10px;
+   }
+   .serversborder-head-left {
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  border:none;
+}
+.serversborder-head-right {
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 20px;
+  border:none;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0 5px; 
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px); 
+  z-index: 999;
+  display: none;
+}
+
+
+.modal-open .overlay {
+  display: block;
+}
+.serversborder-left {
+
+
+ 
+  border-top-left-radius: 20px;
+border-bottom-left-radius: 20px;
+
+}
+.background-light-color {
+        background-color: #f2edff;
+        
+    }
+.background-hard-color {
+        background-color: #b397f8;
+        
+    }
+.serversborder-right {
+border-top-right-radius: 20px;
+border-bottom-right-radius: 20px;
+}
+.table-td{
+   height:60px;
+}
+
+</style>
+{%endblock css%}
+{%block content%}
+<div class="overlay" id="overlay"></div>
+<div class="row">
+     <div class="col-lg-3">
+       <div class="iq-card">
+          <div class="iq-card-body">
+             <div class="">
+                <div class="iq-email-list">
+                   <button class="btn btn-primary create-ticket btn-lg btn-block mb-3 font-size-16 p-3"  data-toggle="modal" data-target=".bd-example-modal-lg"><i class="ri-send-plane-line mr-2"></i>{%trans 'Yeni Talep Oluştur'%}</button>
+                   <div class="iq-email-ui nav flex-column nav-pills">
+                     <li class="ticket-active nav-link">
+                         <a href="?status=answered"><i class="fa-solid fa-ticket"></i>{% trans 'Answered' %}<span class="badge badge-primary ml-2">{{ answered_count }}</span></a>
+                     </li>
+                     <li class="ticket-closed nav-link">
+                         <a href="?status=pending"><i class="fa-solid fa-ticket"></i>{% trans 'Pending' %}<span class="badge badge-primary ml-2">{{ pending_count }}</span></a>
+                     </li>
+                     <li class="ticket-closed nav-link">
+                         <a href="?status=closed"><i class="fa-solid fa-ticket"></i>{% trans 'Closed' %}<span class="badge badge-primary ml-2">{{ closed_count }}</span></a>
+                     </li>
+                 </div>
+                  
+                   
+                   
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+    <div class="col-lg-9 ">
+      <div class="iq-card">
+         
+         <div class="iq-card-body">
+            <table class="table ticket-table col-lg-12" style="border:none;">
+               <thead  style="border:none;">
+                  <tr class="first-td" style="border:none;">
+                     <th style="border:none; color: white; font-weight: bold;"  class="serversborder-head-left background-hard-color" scope="col">
+                       {%trans 'ID'%}
+                    </th>
+                     <th style="border:none; color: white; font-weight: bold;" class="background-hard-color" scope="col">
+                       {%trans 'BAŞLIK'%}
+                    </th>
+                     <th style="border:none; color: white; font-weight: bold;" class="background-hard-color" scope="col">
+                       {%trans 'PRODUCT'%}
+                    </th>
+                    <th style="border:none; color: white; font-weight: bold;" class="background-hard-color" scope="col">
+                       {%trans 'DURUMU'%}
+                    </th>
+                     <th style="border:none; color: white; font-weight: bold;" class="serversborder-head-right background-hard-color" scope="col">
+                       {%trans 'TARİH'%}
+                    </th>
+                  </tr>
+               </thead>
+               <tbody>
+            
+                
+                  {% for ticket in tickets %}
+                  <tr data-id="{{ticket.id}}" >
+                
+                     <th onclick="redirect(event, this)" style="cursor: pointer; border:none; color: #6546d2; font-weight: bold; font-size:16px;" class="serversborder-left background-light-color table-td" scope="row">
+                        {{ ticket.id }}
+                    </th>
+                     <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="background-light-color table-td">
+                        {{ ticket.title }}
+                    </td>
+                     <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="background-light-color table-td">
+                     {%if ticket.product %}  {{ ticket.product.quantity }} Piece {{ ticket.product.type }} {%else%} {%trans 'no product available'%}{%endif%}
+                    </td> 
+                    <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="background-light-color td-status table-td">
+                       <span id="status" ></span>
+                       {{ ticket.status }} <br>
+                           <input type="hidden" value="{{ x.task_id }}" class="task_id"> 
+                    </td> 
+                     <td onclick="redirect(event, this)" style="cursor: pointer; border:none; font-size:16px;" class="serversborder-right background-light-color table-td">
+                        {{ ticket.created_at }} 
+                     </td>
+                    
+                    
+
+                  </tr>
+                  {% endfor %}
+              
+                  
+               </tbody>
+            </table>
+            {%if not tickets%}
+            <h4> {%trans 'Destek talebi bulunmamaktadır.'%} </h4>
+                  {%endif%}
+            {%if tickets%}
+            <div class="pagination">
+               <span class="step-links">
+                   {% if tickets.has_previous %}
+                       <a class="btn btn-primary" href="?page=1&status={{ status }}">&laquo; ilk</a>
+                       <a class="btn btn-primary" href="?page={{ tickets.previous_page_number }}&status={{ status }}">önceki</a>
+                   {% endif %}
+           
+                   <span class="current">
+                       Sayfa {{ tickets.number }} / {{ tickets.paginator.num_pages }}
+                   </span>
+           
+                   {% if tickets.has_next %}
+                       <a class="btn btn-primary" href="?page={{ tickets.next_page_number }}&status={{ status }}">sonraki</a>
+                       <a class="btn btn-primary" href="?page={{ tickets.paginator.num_pages }}&status={{ status }}">son &raquo;</a>
+                   {% endif %}
+               </span>
+           </div>
+           {%endif%}
+         </div>
+      </div>
+    </div>
+    
+    
+   </div>
+  </div>
+    
+
+ </div>
+ <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="createTicketModal" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">Yeni Destek Talebi {{product_id}} </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form action="/panel/create-ticket"  method="POST">
+            {%csrf_token%}
+         <div class="modal-body">
+            
+               <div class="form-group">
+                  <label for="service-name">{%trans 'Önem Sırası'%}</label>
+                  <select class="form-control" id="service-name" name="priority" required>
+                    <option>{%trans 'Bekleyebilirim'%}</option>
+                    <option>{%trans 'Orta'%}</option>
+                    <option>{%trans 'Acil'%}</option>
+                  </select>
+               </div>
+     
+               <div class="form-group">
+                 <label for="service-name">Hizmet Adı</label>
+                 <select class="form-control" id="service-name" name="product_id" required>
+                   
+                  {%for i in products%}
+                     <option value="{{i.id}}" > {{i.quantity}} {%trans 'Adet'%} {{i.type}} - {%trans 'Eklendiği tarih : '%}{{i.date_created}}  </option>
+                  {%endfor%}
+                  <option value="yok" > {%trans 'Talebim ürün ile alakalı değil'%} </option>
+                 </select>
+               </div>
+       
+               
+               <div class="form-group">
+                 <label for="ticket-title">Konu Başlığı</label>
+                 <input type="text" class="form-control" id="ticket-title" name="title" placeholder="Konu başlığınızı girin..." required>
+               </div>
+               
+               <div class="form-group">
+                 <label for="ticket-description" >Açıklama</label>
+                 <textarea class="form-control" name="description" id="ticket-description" rows="3" required></textarea>
+               </div>
+             
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+         </div>
+      </form>
+      </div>
+   </div>
+</div>
+
+{%endblock content%}
+
+{%block js%}
+
+<script>
+
+function redirect(event, element) {
+        var ticketId = element.parentElement.getAttribute('data-id');
+        var url = '/panel/ticket-detail/' + ticketId;
+        window.open(url, '_blank');
+    }
+
+$(document).ready(function() {
+
+    $('#createTicketModal').on('hidden.bs.modal', function(event) {
+    
+      $(this).find('input, select, textarea').val('');
+    });
+
+   
+    $('#createTicketModal').on('hide.bs.modal', function(event) {
+      const inputs = $(this).find('input[type="text"], textarea');
+      let isAnyInputFilled = false;
+      
+      inputs.each(function() {
+        if ($(this).val().trim() !== '') {
+          isAnyInputFilled = true;
+          return false; 
+        }
+      });
+
+      if (isAnyInputFilled) {
+        if (!confirm("Modal içerisinde dolu inputlar bulunuyor. Yine de kapatmak istiyor musunuz?")) {
+          event.preventDefault(); 
+        }
+      }
+    });
+  });
+   $(document).ready(function() {
+   
+    $('.create-ticket').on('click', function() {
+        $('#ticket-modal').css('display', 'block');
+    });
+
+    $('.close').on('click', function() {
+        $('#ticket-modal').css('display', 'none');
+    });
+
+    $('#ticket-form').on('submit', function(e) {
+        e.preventDefault();
+
+    });
+});
+   
+</script>
+{%endblock js%}

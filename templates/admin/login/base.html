@@ -1,0 +1,93 @@
+{%load static%}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load i18n %}
+<!doctype html>
+<html lang="en">
+   
+<head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>{%block head_title%} {%endblock head_title %}</title>
+      <!-- Favicon -->
+      <link rel="shortcut icon" href="{%static 'panel/images/favicon.ico'%}" />
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/bootstrap.min.css'%}">
+      <!-- Typography CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/typography.css'%}">
+      <!-- Style CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/style.css'%}">
+      <!-- Responsive CSS -->
+      <link rel="stylesheet" href="{%static 'panel/css/responsive.css'%}">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+
+   </head>
+   <body>
+      <!-- loader Start -->
+      <div id="loading">
+         <div id="loading-center">
+         </div>
+      </div>
+      <!-- loader END -->
+        <!-- Sign in Start -->
+        <section class="sign-in-page">
+            <div class="container bg-white mt-5 p-0">
+                <div class="row no-gutters">
+                    <div class="col-sm-6 align-self-center">
+                        
+                        <div class="sign-in-from">
+                           {%block content%} {%endblock content%}
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <div class="sign-in-detail text-white">
+                            
+                            <div class="slick-slider11  d-flex justify-content-center align-items-center" data-autoplay="true" data-loop="true" data-nav="false" data-dots="true" data-items="1" data-items-laptop="1" data-items-tab="1" data-items-mobile="1" data-items-mobile-sm="1" data-margin="0">
+                                <div class="item d-flex flex-column justify-content-center align-items-center text-center">
+                                    <img src="{%static 'panel/images/logo.gif'%}" class="img-fluid mb-4 " width="300" height="300" alt="logo">
+                                    <h4 class="mb-1 text-white">{%trans 'New generation proxy management system'%}</h4>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </section>
+        <!-- Sign in END -->
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="{%static 'panel/js/jquery.min.js'%}"></script>
+      <script src="{%static 'panel/js/popper.min.js'%}"></script>
+      <script src="{%static 'panel/js/bootstrap.min.js'%}"></script>
+      <!-- Appear JavaScript -->
+      <script src="{%static 'panel/js/jquery.appear.js'%}"></script>
+      <!-- Countdown JavaScript -->
+      <script src="{%static 'panel/js/countdown.min.js'%}"></script>
+      <!-- Counterup JavaScript -->
+      <script src="{%static 'panel/js/waypoints.min.js'%}"></script>
+      <script src="{%static 'panel/js/jquery.counterup.min.js'%}"></script>
+      <!-- Wow JavaScript -->
+      <script src="{%static 'panel/js/wow.min.js'%}"></script>
+      <!-- Apexcharts JavaScript -->
+      <script src="{%static 'panel/js/apexcharts.js'%}"></script>
+      <!-- Slick JavaScript -->
+      <script src="{%static 'panel/js/slick.min.js'%}"></script>
+      <!-- Select2 JavaScript -->
+      <script src="{%static 'panel/js/select2.min.js'%}"></script>
+      <!-- Owl Carousel JavaScript -->
+      <script src="{%static 'panel/js/owl.carousel.min.js'%}"></script>
+      <!-- Magnific Popup JavaScript -->
+      <script src="{%static 'panel/js/jquery.magnific-popup.min.js'%}"></script>
+      <!-- Smooth Scrollbar JavaScript -->
+      <script src="{%static 'panel/js/smooth-scrollbar.js'%}"></script>
+      <!-- Chart Custom JavaScript -->
+      <script src="{%static 'panel/js/chart-custom.js'%}"></script>
+      <!-- Custom JavaScript -->
+      <script src="{%static 'panel/js/custom.js'%}"></script>
+   </body>
+
+</html>

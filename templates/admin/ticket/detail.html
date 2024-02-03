@@ -1,0 +1,102 @@
+{%extends 'admin/base/index.html'%}
+{%load static%}
+{% load i18n %}
+
+{%block content%}
+<div class="overlay" id="overlay"></div>
+
+<div class="row">
+     
+    <div class="col-lg-12 ">
+      <div class="iq-card">
+         
+         <div class="iq-card-header">
+            <div class="row">
+               <div class="col-lg-1">
+                  <h4 style="font-weight: bold; font-style: italic;" ><b>#{{ticket.id}}</b></h4>
+                  
+               </div>
+               <div class="col-lg-4">
+                  <h4 style="font-weight: bold;">{{ticket.title}}</h4>
+                  
+               </div>
+               <div class="col-lg-3">
+                  <b>{%trans 'Date'%} : {{ticket.created_at}}</b> 
+               </div>
+               <div class="col-lg-3">
+                  <b>Status: {{ticket.status}}</b> 
+               </div>
+               <div class="col-lg-1">
+                  <a href="/panel/ticket" class="btn btn-primary" style="margin-left:auto;" ><i class="fa-solid fa-arrow-left"></i>{%trans 'Back'%}</a>
+               </div>
+            </div>
+         </div>
+         <hr>
+         <div class="iq-card-body">
+            {%for i in messages%}
+            <div class="iq-inbox-subject p-3">
+                <div class="iq-inbox-subject-info">
+                   <div class="iq-subject-info">
+                      <img src="/static/panel/images/logo-dark.gif" class="img-fluid rounded-circle" alt="#">
+                      <div class="iq-subject-status align-self-center">
+                         <h6 class="mb-0">{{i.processed_by}}<a href="dummy%40vito.html"><dummy@vito.com></a></h6>
+                         <div class="">
+                            <a class="" href="#"   aria-haspopup="true" aria-expanded="false">
+                            {{i.processed_by}}
+                            </a>
+                         </div>
+                      </div>
+                      <span class="float-right align-self-center"> {{i.created_at}}</span>
+                   </div>
+                   <div class="iq-inbox-body mt-5">
+                     {{i.description}}
+                   </div>
+                </div>
+            </div>
+           <hr>
+          
+           {%endfor%}
+           <div class="alert bg-white alert-danger" role="alert" id="alertBox" style="display:none;">
+            <div class="iq-alert-text"> {%trans 'Lütfen bir içerik girin !'%}</div>
+         </div>
+           {% if ticket.status != 'closed' %}
+            <form action="/panel/ticket-answer/{{ticket.id}}" id="ticket-answer" method="post">
+               {%csrf_token%}
+             <label for="description">Cevapla</label>
+             <textarea class="form-control" name="description" id="description" rows="5"></textarea>
+             <button type="submit" class="btn btn-primary mt-3 gonder"> Gönder </button>
+            </form>
+            {%endif%}
+         </div>
+      </div>
+    </div>
+    
+    
+   </div>
+  </div>
+    
+
+ </div>
+ 
+
+{%endblock content%}
+
+{%block js%}
+<script>
+    $(document).ready(function() {
+        $('.gonder').click(function(e) {
+         var descriptionContent = $('#description').val().trim();
+         e.preventDefault();
+         if(descriptionContent === '') { 
+                $('#alertBox').show();
+                setTimeout(function() {
+                    $('#alertBox').hide();
+                }, 3000);
+            }else{
+               $("#ticket-answer").submit();
+            }
+        });
+    });
+</script>
+
+{%endblock js%}
